@@ -1,49 +1,93 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
+
 import Item from './Components/Item'
+
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      itemsList: [
-        {
-          name: '',
-          description: '',
-          id: 0
-        }
-      ],
-      newItem: '',
-      newDescription: ''
+      itemsList: [],
+      name: '',
+      description: '',
     }
   }
+
   // methods here:
-  // handleUpdateName(value){
-  //   this.setState({newItem: value})
+  handleNameInput(value) {
+    this.setState({ name: value })
+  }
+
+  handleDescriptionInput(value) {
+    this.setState({ description: value })
+  }
+
+  handleAddToList() {
+    const itemObj = {
+      name: this.state.name,
+      description: this.state.description
+    }
+    // newObj.name = this.state.newItem;
+    // newObj.description = this.state.newDescription;
+    axios.post('http://localhost:4000/api/item', itemObj)
+      .then(response => {
+        this.setState({
+          itemsList: response.data
+        })
+      })
+
+    // this.state.itemsList.push(newObj)
+
+    this.setState({
+      name: '',
+      description: ''
+    })
+  }
+
+  handleGetItems() {
+    axios.get('http://localhost:4000/api/item')
+      .then(response => {
+        this.setState({
+          itemsList: response.data
+        })
+      })
+  }
+
+  // handleGet3() {
+  // console.log('hit')
+  // this.setState({
+  //   itemsList: this.props.serverItems
+  // })
   // }
 
-  // handleUpdateDescription(value){
-  //   this.setState({newDescription: value})
-  // }
+  handleDeleteItem(index) {
+    axios.delete(`http://localhost:4000/api/item/${index}`)
+      .then((response) => {
+        this.setState({
+          itemsList: response.data
+        })
+      })
+  }
 
-  // handleAddToList(){
-  //   let newObj = {}
-  //   newObj.name= this.state.newItem;
-  //   newObj.newDescription= this.state.newDescription;
-
-  //   this.state.itemsList.push(newObj)
-
-  //   this.setState({newItem: ''})
-  //   this.setState({newDescription: ''})
-  // }
-
-
+  handleEditItem(index) {
+    axios.put(`http://localhost:4000/api/item/${index}`)
+      .then((response) => {
+        this.setState({
+          itemsList: response.data,
+          //edit: false
+        })
+      })
+  }
 
   render() {
     const mappedItems = this.state.itemsList.map((eachObj) => {
       return <Item key={eachObj.id} name={eachObj.name}
         description={eachObj.description}
-        id={eachObj.id}
+        handleEditItem={this.state.handleEditItem}
+        handleDeleteItem={this.state.handleDeleteItem}
+
       />
     })
 
@@ -53,11 +97,19 @@ class App extends Component {
           style={{ height: '5vh', width: '50vw', background: 'lightgrey', border: "1px black solid", margin: '15px auto', paddingBottom: '10px' }}>
           Grocery List
         </h1>
-        {/* <input onChange={(e) => this.handleUpdateName(e.target.value)}
-        placeholder={'ie: apples'}
-        />
-        <input onChange={(e) => this.handleUpdateDescription(e.target.value)}/>
-        <button onClick={() => this.handleAddToList()}>Add item to list</button> */}
+        <button onClick={() => this.handleGetItems()}
+        >Get top 3</button>
+        <div>
+          <input onChange={(e) => this.handleNameInput(e.target.value)}
+            value={this.state.name}
+            placeholder={'item'}
+          />
+          <input onChange={(e) => this.handleDescriptionInput(e.target.value)}
+            value={this.state.description}
+            placeholder={`description`} />
+          <button
+            onClick={() => this.handleAddToList()}> Add item to list </button>
+        </div>
         <div
           style={{ height: '80vh', width: '20vw', background: 'lightblue', border: '1px black solid', margin: '15px auto', paddingTop: '15px' }}>
           {mappedItems}
