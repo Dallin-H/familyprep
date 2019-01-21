@@ -1,17 +1,14 @@
 let serverItems = [
     {
         name: 'Milk',
-        description: 'Whole',
         index: 0
     },
     {
         name: 'Bananas',
-        description: 'Not quite yellow',
         index: 1
     },
     {
         name: 'Bread',
-        description: '2 loaves, white',
         index: 2
     }
 ]
@@ -27,7 +24,6 @@ module.exports = {
 
         const newItem = {
             name: req.body.name,
-            description: req.body.description,
             index: index
         };
 
@@ -37,13 +33,13 @@ module.exports = {
 
 
     editItem: (req, res) => {
-        const { name, description } = req.body
+        const { name } = req.body
         const { index } = req.params
 
         let itemIndex = serverItems.findIndex((obj) => {
-            return obj.index === index
+            return obj.index ===( +index)
         })
-        serverItems.splice(itemIndex, 1, { name, description, index })
+        serverItems.splice(itemIndex, 1, { name, index: +index })
         res.status(200).send(serverItems)
     },
 
@@ -52,7 +48,7 @@ module.exports = {
         const { index } = req.params
 
         let itemIndex = serverItems.findIndex((obj) => {
-            return obj.index === index
+            return obj.index ===( +index)
         })
         serverItems.splice(itemIndex, 1)
         res.status(200).send(serverItems)

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-
+import Recipe from './Components/Recipe'
 import Item from './Components/Item'
-
+import Bag from './Components/Bag'
 
 class App extends Component {
   constructor() {
@@ -13,6 +13,8 @@ class App extends Component {
       name: '',
       description: '',
     }
+    this.handleDeleteItem = this.handleDeleteItem.bind(this)
+    this.handleEditItem = this.handleEditItem.bind(this)
   }
 
   // methods here:
@@ -63,6 +65,7 @@ class App extends Component {
   // }
 
   handleDeleteItem(index) {
+    console.log(index)
     axios.delete(`http://localhost:4000/api/item/${index}`)
       .then((response) => {
         this.setState({
@@ -71,49 +74,54 @@ class App extends Component {
       })
   }
 
-  handleEditItem(index) {
-    axios.put(`http://localhost:4000/api/item/${index}`)
+  handleEditItem(index, name) {
+    console.log(index)
+    axios.put(`http://localhost:4000/api/item/${index}`, {name})
       .then((response) => {
         this.setState({
           itemsList: response.data,
-          //edit: false
         })
       })
   }
-
+ 
   render() {
     const mappedItems = this.state.itemsList.map((eachObj) => {
-      return <Item key={eachObj.id} name={eachObj.name}
-        description={eachObj.description}
-        handleEditItem={this.state.handleEditItem}
-        handleDeleteItem={this.state.handleDeleteItem}
+      console.log(eachObj)
+      return <Item key={eachObj.index} name={eachObj.name}
+        handleEditItem={this.handleEditItem}
+        handleDeleteItem={this.handleDeleteItem}
+        index={eachObj.index}
 
       />
     })
 
     return (
       <div className="App" >
-        <h1
-          style={{ height: '5vh', width: '50vw', background: 'lightgrey', border: "1px black solid", margin: '15px auto', paddingBottom: '10px' }}>
+        <Bag /><Bag /><Bag /><Bag /><Bag />
+        <Recipe />
+        <h1 className='header'>
           Grocery List
         </h1>
-        <button onClick={() => this.handleGetItems()}
+        <button
+          style={{ width: '15vh', height: '7.5vh' }}
+          onClick={() => this.handleGetItems()}
         >Get top 3</button>
         <div>
-          <input onChange={(e) => this.handleNameInput(e.target.value)}
+          <input
+            onChange={(e) => this.handleNameInput(e.target.value)}
             value={this.state.name}
             placeholder={'item'}
           />
-          <input onChange={(e) => this.handleDescriptionInput(e.target.value)}
-            value={this.state.description}
-            placeholder={`description`} />
           <button
-            onClick={() => this.handleAddToList()}> Add item to list </button>
+            onClick={() => this.handleAddToList()}>
+            Add item to list
+            </button>
         </div>
         <div
-          style={{ height: '80vh', width: '20vw', background: 'lightblue', border: '1px black solid', margin: '15px auto', paddingTop: '15px' }}>
+          style={{ height: '80vh', width: '20vw', background: '#4682B4', border: '1px black solid', margin: '15px auto', paddingTop: '15px' }}>
           {mappedItems}
         </div>
+        <Bag /><Bag /><Bag /><Bag /><Bag />
       </div>
     );
   }
