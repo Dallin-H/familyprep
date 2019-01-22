@@ -12,7 +12,7 @@ class Item extends Component {
     render() {
         return (
             <div className="ListItem"
-                style={{ width: '20vh', height: 'auto', background: '#1E90FF', postion: 'center', margin: 'auto'}}>
+                style={{ width: '90%', height: 'auto', background: '#1E90FF', postion: 'center', margin: 'auto'}}>
                 <h1><u>{this.props.name}</u></h1>
 
                 <input

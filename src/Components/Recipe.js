@@ -5,53 +5,48 @@ class Recipe extends Component {
     constructor() {
         super();
         this.state = {
-            recipes: [],
-            search: ''
+            recipe: '',
         }
     }
     //methods go here
 
-    handleChangeSearch(value) {
-        this.setState({
-            search: value
-        })
-    }
+    handleClick() {
 
-    handleClick(text) {
-        axios.get(`https://food2fork.com/api/get?key=edc&q=${text}`)
+       
+       let min = Math.ceil(1000);
+       let max = Math.floor(10000);
+
+        let num = Math.floor(Math.random() * (max - min)) + min
+        console.log(num)
+
+        axios.get(`https://www.food2fork.com/api/get?key=ecf38fff40f427e457809b2ab74b47dc&rId=${num}`)
             .then(response => {
                 console.log(response)
                 this.setState({
-                    recipe: response.data
+                    recipe: response.data.recipe.title
                 })
             })
-        this.setState({
-            search: ''
-        })
     }
 
 
     render() {
         return (
-            <div>
-                <h3
-                    style={{
+            <div style={{
                         height: 'auto', width: '20vw',
                         background: '#e8ea5d', border: '1px black solid',
                         margin: '15px auto', paddingBottom: '10px'
-                    }}
-                >Recipe Finder:
-                    <input
-                        onChange={(value) => this.handleChangeSearch(value)}
-                        placeholder={'seperate w/ comma'}
-
-                    />
+                    }}>
+                <h3>
+                Inspiration:
+                </h3>
                     <button 
-                    style={{}} 
                     onClick={() => this.handleClick()}>
                         Click Here
                     </button>
-                </h3>
+                <div>
+                    <h4>results:</h4>
+                    {this.state.recipe}
+                </div>
             </div>
         )
     }
